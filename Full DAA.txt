@@ -1,0 +1,1673 @@
+//Merge Sort
+#include<stdio.h>
+#include<stdlib.h>
+void merge(int arr[],int low,int mid,int high){
+	int i=low;
+	int j=mid+1;
+	int k=0;
+	int temp[high-low+1];
+	while(i<=mid && j<=high){
+		if(arr[i]<=arr[j]){
+			temp[k++]=arr[i++];
+		}
+		else{
+			temp[k++]=arr[j++];
+		}
+	}
+	while(i<=mid){
+		temp[k++]=arr[i++];
+	}
+	while(j<=high){
+		temp[k++]=arr[j++];
+	}
+	k=0;
+	for(i=low;i<=high;i++){
+		arr[i]=temp[k++];
+	}
+}
+void mergeSort(int arr[],int low,int high){
+	if(low<high){
+		int mid=(low+high)/2;
+		mergeSort(arr,low,mid);
+		mergeSort(arr,mid+1,high);
+		merge(arr,low,mid,high);
+	}
+}
+void display(int arr[],int low,int high){
+	int i;
+	for(i=low;i<=high;i++){
+		printf("%3d",arr[i]);
+	}
+}
+int main(){
+	int n,i;
+	printf("Enter the number of elements : ");
+	scanf("%d",&n);
+	int *arr=(int *)malloc(n*sizeof(int));
+	printf("Enter the elements : ");
+	for(i=0;i<n;i++){
+		scanf("%d",&arr[i]);
+	}
+	printf("\nThe original array is : ");
+	display(arr,0,n-1);
+	mergeSort(arr,0,n-1);
+	printf("\nThe sorted array is : ");
+	display(arr,0,n-1);
+	return 0;
+}
+
+
+
+
+
+//Quick Sort
+#include<stdio.h>
+#include<stdlib.h>
+void swap(int *a,int *b){
+    int temp=*a;
+    *a=*b;
+    *b=temp;
+}
+void display(int arr[],int low,int high){
+	int i;
+	for(i=low;i<=high;i++){
+		printf("%3d",arr[i]);
+	}
+}
+int partition(int arr[], int low, int high){
+    int pivot=arr[high];
+    int i=low-1,j;
+    printf("\nSubarray : ");
+    display(arr,low,high);
+    for(j=low;j<high;j++){
+        if(arr[j]<pivot){
+            i++;
+            swap(&arr[i],&arr[j]);
+        }
+    }
+    swap(&arr[i+1],&arr[high]);
+    return i+1;
+}
+void quickSort(int arr[], int low, int high){
+    if(low<high){
+        int j=partition(arr, low, high);
+        quickSort(arr, low, j-1);
+        quickSort(arr, j+1, high);
+    }
+}
+int main(){
+    int n,i;
+    printf("Enter the number of elements: ");
+    scanf("%d",&n);
+    int *arr=(int *)malloc(n*sizeof(int));
+    printf("Enter the elements: ");
+    for(i=0;i<n;i++){	
+		scanf("%d",&arr[i]);
+	}
+    quickSort(arr, 0, n-1);
+    printf("\nThe Sorted Array is: ");
+    display(arr,0,n-1);
+    return 0;
+}
+
+
+
+
+
+// Randomized Quick Sort
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+void swap(int *a, int *b) {
+	int temp = *a;
+	*a = *b;
+	*b = temp;
+}
+void display(int arr[], int low, int high) {
+	int i;
+	for (i = low; i <= high; i++) {
+		printf("%3d", arr[i]);
+	}
+}
+int partition(int arr[], int low, int high) {
+	int pivot = arr[high];
+	int i = low - 1;
+	printf("\nSubarray : ");
+	display(arr, low, high);
+	int j;
+	for (j = low; j < high; j++) {
+		if (arr[j] < pivot) {
+			i++;
+			swap(&arr[i], &arr[j]);
+		}
+	}
+	swap(&arr[i + 1], &arr[high]);
+	return i + 1;
+}
+
+// Randomized partition
+int randomizedPartition(int arr[], int low, int high) {
+	int pivotIndex = low + rand() % (high - low + 1);
+	swap(&arr[pivotIndex], &arr[high]);  // To Move pivot to the end
+	return partition(arr, low, high);
+}
+
+void quickSort(int arr[], int low, int high) {
+	if (low < high) {
+		int pi = randomizedPartition(arr, low, high);
+		quickSort(arr, low, pi - 1);
+		quickSort(arr, pi + 1, high);
+	}
+}
+
+int main() {
+	int n;
+	printf("Enter the number of elements: ");
+	scanf("%d", &n);
+
+	int *arr = (int *)malloc(n * sizeof(int));
+	printf("Enter the elements: ");
+	int i;
+	for (i = 0; i < n; i++) {
+		scanf("%d", &arr[i]);
+	}
+	srand(time(0));  // To Seed the random number generator
+	quickSort(arr, 0, n - 1);
+	printf("\nThe Sorted Array is : ");
+	display(arr, 0, n - 1);
+	printf("\n");
+	free(arr);
+	return 0;
+}
+
+
+
+
+
+//Heap Sort
+#include<stdio.h>
+#include<stdlib.h>
+void swap(int *a,int *b){
+    int temp=*a;
+    *a=*b;
+    *b=temp;
+}
+void heapAdjust(int arr[], int i, int n){
+    int j=2*i;
+    int key=arr[i];
+    while(j<=n){
+        if(j<n && arr[j]<arr[j+1]){
+            j+=1;
+    	}
+        if(key>=arr[j]){
+            break;
+    	}
+        arr[j/2]=arr[j];
+        j=2*j;
+    }
+    arr[j/2]=key;
+}
+void makeHeap(int arr[], int n){
+	int i;
+    for(i=n/2;i>0;i--){
+        heapAdjust(arr,i,n);
+    }
+}
+void heapSort(int arr[], int n){
+    makeHeap(arr,n);
+    int i;
+    for(i=n;i>1;i--){
+        swap(&arr[i],&arr[1]);
+        heapAdjust(arr,1,i-1);
+    }
+}
+int main(){
+    int n,i;
+    printf("Enter the number of elements : ");
+    scanf("%d",&n);
+    int *arr=(int *)malloc((n+1)*sizeof(int));
+    printf("Enter the elements : ");
+    for(i=1;i<=n;i++){
+		scanf("%d",&arr[i]);
+	}	
+    heapSort(arr, n);
+    printf("The Sorted Array is : ");
+    for(i=1;i<=n;i++){
+		printf("%d ",arr[i]);
+	}
+    return 0;
+}
+
+
+
+
+
+//Binary Search
+#include<stdio.h>
+int binarySearch(int arr[],int low,int high,int item){
+	if(low<=high){
+		int mid=(low+high)/2;
+		if(arr[mid]==item){
+			return mid;
+		}
+		else if(arr[mid]>item){
+			return binarySearch(arr,low,mid-1,item);
+		}
+		else{
+			return binarySearch(arr,mid+1,high,item);
+		}
+	}
+	else{
+		return -1;
+	}
+}
+void display(int *arr,int n){
+	int i;
+	for(i=0;i<n;i++){
+		printf("%d\t",arr[i]);
+	}
+	printf("\n");
+}
+int main(){
+	int i,n,x,result;
+	printf("Enter the total number of elements : ");
+	scanf("%d",&n);
+	int arr[n];
+	printf("\nEnter the array elements in sorted order : ");
+		for(i=0;i<n;i++){
+			scanf("%d",&arr[i]);
+	}
+	printf("\nEnter the element to be searched : ");
+	scanf("%d",&x);
+	printf("\nThe Array elements are : ");
+	display(arr,n);
+	result=binarySearch(arr,0,n-1,x);
+	if(result!=-1){
+		printf("%d is present at index number : %d",x,result);
+	}
+	else{
+		printf("%d is not present in the array",x);
+	}
+}
+
+
+
+
+
+//Max-Min by Normal method
+#include<stdio.h>
+int c=0;
+void MaxMin(int arr[],int n){
+	int max=arr[0];
+	int min=arr[0];
+	int i;
+	for(i=1;i<n;i++){
+		if(max<arr[i]){
+			max=arr[i];
+			c++;
+		}
+		if(min>arr[i]){
+			min=arr[i];
+			c++;
+		}
+	}
+	printf("Max : %3d\tMin : %3d",max,min);
+	printf("\nTotal number of comparisons : %d",c);
+}
+int main(){
+	int i,n;
+	printf("Enter the size of the array : ");
+	scanf("%d",&n);
+	int arr[n];
+	printf("Enter the array elements : ");
+	for(i=0;i<n;i++){
+		scanf("%d",&arr[i]);
+	}
+	MaxMin(arr,n);
+}
+
+
+
+
+
+//MaxMin
+#include<stdio.h>
+#include<stdlib.h>
+int c=0;
+void MaxMin(int arr[],int i,int j,int *max,int *min){
+	int max2=INT_MIN;
+	int min2=INT_MAX;
+	if(i==j){
+		*max=arr[i];
+		*min=arr[j];	
+	}
+	else if(i==j-1){
+		c++;
+		if(arr[i]<arr[j]){
+			*max=arr[j];
+			*min=arr[i];
+		}
+		else{
+			*max=arr[i];
+			*min=arr[j];	
+		}
+	}
+	else{
+		int mid=(i+j)/2;
+		MaxMin(arr,i,mid,max,min);
+		MaxMin(arr,mid+1,j,&max2,&min2);
+		if(c++ && *max<max2){
+			*max=max2;
+		}
+		if(c++ && *min>min2){
+			*min=min2;
+		}
+	}
+}
+int main(){
+	int i,n;
+	int max=INT_MIN,min=INT_MAX;
+	printf("Enter the size of the array : ");
+	scanf("%d",&n);
+	int arr[n];
+	printf("Enter the array elements : ");
+	for(i=0;i<n;i++){
+		scanf("%d",&arr[i]);
+	}
+	MaxMin(arr,0,n-1,&max,&min);
+	printf("Maximum : %3d\nMinimum : %3d",max,min);
+	printf("\nTotal number of comparisons required : %3d",c);
+}
+
+
+
+
+
+BFS_Graph.txt :
+5
+0 1 1 0 0 
+1 0 0 1 0
+1 0 0 0 1
+0 1 0 0 0
+0 0 1 0 0
+
+//BFS
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+#define MAX 20
+int front = -1;
+int rear = -1;
+int Q[MAX];
+int visited[MAX];
+int n;
+int weight[MAX][MAX]; 
+int isFull() {
+    return (rear + 1 == MAX);
+}
+int isEmpty() {
+    return (front == rear);
+}
+void enQueue(int item) {
+    if (isFull()) {
+        printf("Queue is Full\n");
+        return;
+    }
+    Q[++rear] = item;
+}
+int deQueue() {
+    if (isEmpty()) {
+        printf("Queue is Empty\n");
+        return INT_MAX;
+    }
+    return Q[++front];
+}
+void BFS(int v) {
+    enQueue(v);
+    visited[v]=1;
+    while (!isEmpty()) {
+        int u=deQueue();
+        printf("%c ",u+'A');
+		int w;
+        for (w=0;w<n;w++) {
+            if (weight[u][w] == 1 && visited[w] == 0) {
+                visited[w] = 1;
+                enQueue(w);
+            }
+        }
+    }
+}
+void readGraph() {
+    FILE *fp = fopen("BFS_Graph.txt", "r");
+    if (fp == NULL) {
+        printf("\nFile open failed!!\n");
+        exit(1);
+    }
+    fscanf(fp,"%d",&n);  // Read number of vertices
+	int i,j;
+    for (i=0;i<n;i++) {
+        visited[i]=0;
+        for(j=0;j<n;j++) {
+            fscanf(fp,"%d",&weight[i][j]);
+        }
+    }
+    fclose(fp);
+}
+void displayGraph() {
+	int i,j;
+    printf("\nAdjacency Matrix:\n");
+    for(i=0;i<n;i++) {
+        for(j=0;j<n;j++) {
+            printf("%2d ", weight[i][j]);
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
+
+int main() {
+    readGraph();
+    displayGraph();
+    int start;
+    printf("Enter starting node index (0 to %d): ", n - 1);
+    scanf("%d", &start);
+    printf("BFS Traversal: ");
+    BFS(start);
+    return 0;
+}
+
+
+
+
+
+//graph.txt : 
+5
+0 1 2 -1
+1 0 3 -1
+2 0 4 -1
+3 1 -1
+4 2 -1
+
+//BFS using Adjacency List
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+#define MAX 20
+int front = -1, rear = -1;
+int Q[MAX];
+int visited[MAX];
+int n;
+typedef struct Node {
+    int vertex;
+    struct Node* next;
+} Node;
+Node* adjList[MAX];  // Array of pointers to linked lists
+int isFull() {
+    return (rear + 1 == MAX);
+}
+int isEmpty() {
+    return (front == rear);
+}
+void enQueue(int item) {
+    if (isFull()) {
+        printf("Queue is Full\n");
+        return;
+    }
+    Q[++rear] = item;
+}
+int deQueue() {
+    if (isEmpty()) {
+        printf("Queue is Empty\n");
+        return INT_MAX;
+    }
+    return Q[++front];
+}
+Node* createNode(int v) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->vertex = v;
+    newNode->next = NULL;
+    return newNode;
+}
+void addEdge(int src, int dest) {
+    Node* newNode = createNode(dest);
+    newNode->next = adjList[src];
+    adjList[src] = newNode;
+}
+void readGraph() {
+    FILE* fp = fopen("graph.txt", "r");
+    if (fp == NULL) {
+        printf("File open failed!!\n");
+        exit(1);
+    }
+    fscanf(fp, "%d", &n);
+	int i;
+    for (i = 0; i < n; i++) {
+        adjList[i] = NULL;
+        visited[i] = 0;
+    }
+    int src, dest;
+    while (fscanf(fp, "%d", &src) != EOF) {
+        while (1) {
+            fscanf(fp, "%d", &dest);
+            if (dest == -1)
+                break;
+            addEdge(src, dest);
+        }
+    }
+    fclose(fp);
+}
+void displayGraph() {
+	int i;
+    printf("\nAdjacency List:\n");
+    for (i = 0; i < n; i++) {
+        printf("%d: ", i);
+        Node* temp = adjList[i];
+        while (temp) {
+            printf("%d ", temp->vertex);
+            temp = temp->next;
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
+void BFS(int v) {
+    enQueue(v);
+    visited[v] = 1;
+
+    while (!isEmpty()) {
+        int u = deQueue();
+        printf("%c ", u + 'A');
+
+        Node* temp = adjList[u];
+        while (temp) {
+            int w = temp->vertex;
+            if (!visited[w]) {
+                visited[w] = 1;
+                enQueue(w);
+            }
+            temp = temp->next;
+        }
+    }
+}
+int main() {
+    readGraph();
+    displayGraph();
+    int start;
+    printf("Enter starting node index (0 to %d): ", n - 1);
+    scanf("%d", &start);
+    printf("BFS Traversal: ");
+    BFS(start);
+    return 0;
+}
+
+
+
+
+
+
+DFS_Graph.txt :
+5
+0 1 1 0 0 
+1 0 0 1 0
+1 0 0 0 1
+0 1 0 0 0
+0 0 1 0 0
+
+//DFS
+#include <stdio.h>
+#include <stdlib.h>
+#define MAX 20
+int stack[MAX];
+int top = -1;
+int visited[MAX];
+int weight[MAX][MAX];
+int n;
+void push(int item) {
+    if (top == MAX - 1) {
+        printf("Stack Overflow\n");
+        return;
+    }
+    stack[++top] = item;
+}
+int pop() {
+    if (top == -1) {
+        printf("Stack Underflow\n");
+        return -1;
+    }
+    return stack[top--];
+}
+int isStackEmpty() {
+    return top == -1;
+}
+void DFS(int v) {
+    push(v);
+    visited[v] = 1;
+
+    while (!isStackEmpty()) {
+        int u = pop();
+        printf("%c ",u+'A');
+		int w;
+        for (w=n-1;w>=0;w--) {
+            if (weight[u][w] == 1 && visited[w] == 0) {
+                push(w);
+                visited[w] = 1;
+            }
+        }
+    }
+}
+void readGraph() {
+    FILE *fp = fopen("DFS_Graph.txt", "r");
+    if (fp == NULL) {
+        printf("\nFile open failed!!\n");
+        exit(1);
+    }
+    fscanf(fp,"%d",&n);
+	int i,j;
+    for(i=0;i<n;i++) {
+        visited[i] = 0;
+        for (j=0;j<n;j++) {
+            fscanf(fp, "%d", &weight[i][j]);
+        }
+    }
+    fclose(fp);
+}
+void displayGraph() {
+    printf("\nAdjacency Matrix:\n");
+    int i,j;
+    for(i=0;i<n;i++) {
+        for(j=0;j<n;j++) {
+            printf("%2d ",weight[i][j]);
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
+int main() {
+    readGraph();
+    displayGraph();
+    int start;
+    printf("Enter starting node index (0 to %d): ", n - 1);
+    scanf("%d", &start);
+    printf("DFS Traversal: ");
+    DFS(start);
+    return 0;
+}
+
+
+
+
+
+graph.txt : 
+5
+0 1 2 -1
+1 0 3 -1
+2 0 4 -1
+3 1 -1
+4 2 -1
+
+//DFS using Adjacency List
+#include <stdio.h>
+#include <stdlib.h>
+#define MAX 20
+int top = -1;
+int stack[MAX];
+int visited[MAX];
+int n;
+struct Node {
+    int vertex;
+    struct Node* next;
+};
+struct Node* adjList[MAX];  // Adjacency list array
+int isEmpty() {
+    return (top == -1);
+}
+int isFull() {
+    return (top == MAX - 1);
+}
+void push(int item) {
+    if (isFull()) {
+        printf("Stack Overflow\n");
+        return;
+    }
+    stack[++top] = item;
+}
+int pop() {
+    if (isEmpty()) {
+        printf("Stack Underflow\n");
+        return -1;
+    }
+    return stack[top--];
+}
+struct Node* createNode(int data) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->vertex = data;
+    newNode->next = NULL;
+    return newNode;
+}
+void addEdge(int src, int dest) {
+    struct Node* newNode = createNode(dest);
+    newNode->next = adjList[src];
+    adjList[src] = newNode;
+}
+void readGraph() {
+    FILE* fp = fopen("graph.txt", "r");
+    if (fp == NULL) {
+        printf("File open failed!\n");
+        exit(1);
+    }
+    fscanf(fp, "%d", &n);
+	int i;
+    for (i = 0; i < n; i++) {
+        adjList[i] = NULL;
+        visited[i] = 0;
+    }
+    int src, dest;
+    while (fscanf(fp, "%d", &src) != EOF) {
+        while (1) {
+            fscanf(fp, "%d", &dest);
+            if (dest == -1) break;
+            addEdge(src, dest);
+        }
+    }
+    fclose(fp);
+}
+void displayGraph() {
+    printf("\nAdjacency List:\n");
+    int i;
+    for (i = 0; i < n; i++) {
+        printf("%d: ", i);
+        struct Node* temp = adjList[i];
+        while (temp) {
+            printf("%d ", temp->vertex);
+            temp = temp->next;
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
+void DFS(int start) {
+    push(start);
+    while (!isEmpty()) {
+        int u = pop();
+        if (!visited[u]) {
+            visited[u] = 1;
+            printf("%c ",u+'A');
+    	}
+        struct Node* temp = adjList[u];
+        while (temp) {
+            int w = temp->vertex;
+            if (!visited[w]) {
+                push(w);
+            }
+            temp = temp->next;
+        }
+    }
+}
+int main() {
+    readGraph();
+    displayGraph();
+    int start;
+    printf("Enter starting node index (0 to %d): ", n - 1);
+    scanf("%d", &start);
+    printf("DFS Traversal: ");
+    DFS(start);
+    return 0;
+}
+
+
+
+
+
+//Fractional Knapsack
+#include <stdio.h>
+#include <stdlib.h>
+struct item {
+    int profit, weight, index;
+    float ppw;
+};
+void bubble(struct item list[], int n) {
+    int i, j;
+    struct item temp;
+    for (i=0;i<n;i++){
+        for(j=0;j<n-i-1;j++) {
+            if(list[j].ppw<list[j+1].ppw) {
+                temp = list[j];
+                list[j] = list[j + 1];
+                list[j + 1] = temp;
+            }
+        }
+    }
+}
+void FractionalKnapsack(struct item list[], int n, float m) {
+    bubble(list, n);
+    float x[n];  // x[i] = fraction taken of list[i]
+    int i;
+    for (i=0;i<n;i++) {
+        x[i]=0.0;
+    }
+    float u=m;
+    for (i=0;i<n;i++) {
+        if (list[i].weight>u)
+            break;
+        x[i]=1.0;
+        u=u-list[i].weight;
+    }
+    if(i<n){
+        x[i]=u/(float)list[i].weight;
+    }
+    // Map solution back to original item order
+    float selected[n];  // selected[i] = fraction of original item i
+    for(i=0;i<n;i++) {
+        selected[list[i].index]=x[i];
+    }
+    float totalProfit = 0;
+    for(i=0;i<n;i++) {
+        totalProfit += selected[i] * list[i].profit;
+    }
+    printf("\nSolution vector :\n");
+    printf("x = [");
+    for(i=0;i<n;i++) {
+        printf("%.2f", selected[i]);
+        if (i<n-1) printf(", ");
+    }
+    printf("]\n");
+    printf("Total Profit: %.2f\n", totalProfit);
+}
+int main() {
+    int n, i;
+    float m;
+    printf("Enter the number of items: ");
+    scanf("%d", &n);
+    printf("Enter the Knapsack capacity: ");
+    scanf("%f", &m);
+    struct item list[n];
+    printf("Enter the profit and weight of the items:\n");
+    for(i=0;i<n;i++){
+        scanf("%d %d", &list[i].profit, &list[i].weight);
+        list[i].ppw = (float)list[i].profit / list[i].weight;
+        list[i].index = i;
+    }
+    FractionalKnapsack(list, n, m);
+    return 0;
+}
+
+
+
+
+
+//JSD
+#include <stdio.h>
+#include <string.h>
+typedef struct{
+    char id;
+    int p;
+    int d;
+}Job;
+void merge(Job arr[],int left,int mid,int right) {
+    int i=left,j=mid+1;
+    while(i<=mid&&j<=right){
+        if(arr[i].p>=arr[j].p){
+            i++;
+        }
+		else{
+            Job temp=arr[j];
+            int k=j;
+            while(k>i){
+                arr[k]=arr[k-1];
+                k--;
+            }
+            arr[i]=temp;
+            i++;
+            mid++;
+            j++;
+        }
+    }
+}
+void mergeSort(Job arr[], int left, int right) {
+    if (left<right){
+        int mid=left+(right-left)/2;
+        mergeSort(arr, left, mid);
+        mergeSort(arr, mid + 1, right);
+        merge(arr, left, mid, right);
+    }
+}
+int findmd(Job jobs[], int n) {
+    int md=0,i;
+    for (i=0;i<n;i++) {
+        if (jobs[i].d>md)
+            md=jobs[i].d;
+    }
+    return md;
+}
+int jobScheduling(Job jobs[], int n, char s[]) {
+    mergeSort(jobs, 0, n - 1);
+    int md=findmd(jobs, n);
+    char slot[md];
+    int totalp = 0;
+	int i,j;
+    for (i=0;i<md;i++)
+        slot[i]='-';
+    for (i=0;i<n;i++) {
+        for (j=jobs[i].d-1;j>=0;j--) {
+            if(slot[j]=='-') {
+                slot[j]=jobs[i].id;
+                totalp+=jobs[i].p;
+                break;
+            }
+        }
+    }
+    for (i=0;i<md;i++)
+        s[i]=slot[i];
+    return totalp;
+}
+
+int main() {
+    int i,n;
+    printf("Enter the number of jobs: ");
+    scanf("%d",&n);
+    Job jobs[n];
+    printf("Enter Job IDs, ps, and ds:\n");
+    for (i=0;i<n;i++) {
+        printf("Job %d (ID p d): ",i+1);
+        scanf(" %c %d %d", &jobs[i].id, &jobs[i].p, &jobs[i].d);
+    }
+    char s[findmd(jobs, n)];
+    int maxp=jobScheduling(jobs, n, s);
+    printf("\nsd Jobs: ");
+    for (i=0;i<findmd(jobs, n);i++)
+        printf("%c ", s[i]);
+    printf("\nMaximum Profit : %d\n",maxp);
+    return 0;
+}
+
+
+
+
+
+//Kruskals Algorithm
+#include<stdio.h>
+struct Edge{
+	int v1;
+	int v2;
+	int weight;
+};
+struct Edge e[]={{0,0,0},{1,2,7},{1,4,8},{2,4,3},{2,3,6},{3,5,2},{3,4,4},{4,5,3},{5,6,2},{3,6,5}};
+int noE=9;
+int noV=6;
+void display(){
+	int i;
+	for(i=1;i<=noE;i++){
+		printf("(%c %c)==>%d\n",e[i].v1-1+'A',e[i].v2-1+'A',e[i].weight);
+	}
+	printf("\n");
+}
+void bubble(){
+	int i,j;
+	for(i=1;i<=noE-1;i++){
+		for(j=1;j<=noE-i;j++){
+			if(e[j].weight>e[j+1].weight){
+				struct Edge temp=e[j];
+				e[j]=e[j+1];
+				e[j+1]=temp;
+			}
+		}
+	}
+}
+int parent[100];
+int find(int v){
+	while(parent[v]>0){
+		v=parent[v];
+	}
+	return v;
+}
+void simpleUnion(int u,int v){
+	parent[v]=u;
+}
+int spT[20][3];
+int treeEdge=0;
+void Kruskal(){
+	int i;
+	bubble();
+	display();
+	for(i=1;i<=noV;i++){
+		parent[i]=-1;
+	}
+	for(i=1;i<=noE;i++){
+		int u=find(e[i].v1);
+		int v=find(e[i].v2);
+		if(u!=v){
+			simpleUnion(u,v);
+			spT[treeEdge][0]=e[i].v1;
+			spT[treeEdge][1]=e[i].v2;
+			spT[treeEdge++][2]=e[i].weight;
+		}
+	}
+	int cost=0;
+	for(i=0;i<treeEdge;i++){
+		printf("(%c %c)==>%d\n",spT[i][0]-1+'A', + spT[i][1]-1+'A',spT[i][2]);
+		cost+=spT[i][2];
+	}
+	printf("\nTotal Cost : %d",cost);
+}
+int main(){
+	Kruskal();
+	return 0;
+}
+
+
+
+
+
+Prims_Graph.txt :
+6
+0 7 0 8 0 0
+7 0 6 3 0 0
+0 6 0 4 2 5
+8 3 4 0 3 0
+0 0 2 3 0 2
+0 0 5 0 2 0
+
+//Prims Algorithm
+#include<stdio.h>
+#include<stdlib.h>
+#define MAX 10
+int n;
+int weight[MAX][MAX];
+void readGraph(){
+	int i,j;
+	FILE *fp=fopen("Prims_Graph.txt","r");
+	if(fp==NULL){
+		printf("\nFile open failed !!");
+		exit(1);
+	}
+	fscanf(fp,"%d",&n);
+	for(i=0;i<n;i++){
+		for(j=0;j<n;j++){
+			fscanf(fp,"%d",&weight[i][j]);
+		}
+	}
+	fclose(fp);
+}
+void displayGraph(){
+	int i,j;
+	for(i=0;i<n;i++){
+		for(j=0;j<n;j++){
+			printf("%3d",weight[i][j]);
+		}
+		printf("\n");
+	}
+	printf("\n\n");
+}
+int key[MAX];
+int parent[MAX];
+int mstSet[MAX];
+int minKey(){
+	int i,j;
+	int index=-1;
+	int min=9999;
+	for(i=0;i<n;i++){
+		if(mstSet[i]==0 && key[i]<min){
+			min=key[i];
+			index=i;
+		}
+	}
+	return index;
+}
+void Prims(int start){
+	int i,v;
+	for(i=0;i<n;i++){
+		key[i]=9999;
+		parent[i]=-1;
+		mstSet[i]=0;
+	}
+	key[start]=0;
+	for(i=0;i<n;i++){
+		int u=minKey();
+		mstSet[u]=1;
+		for(v=0;v<n;v++){
+			if(weight[u][v]!=0){
+				if(mstSet[v]==0 && key[v]>weight[u][v]){
+					key[v]=weight[u][v];
+					parent[v]=u;
+				}	
+			}
+		}
+	}
+}
+void displayTree(){
+	int i,c=0;
+	for(i=0;i<n;i++){
+		if(parent[i]!=-1){
+			printf("(%c %c)==>%d\n",parent[i]+'A',i+'A',weight[parent[i]][i]);
+			c=c+weight[parent[i]][i];
+		}
+	}
+	printf("\nTotal Cost : %d",c);
+}
+int main(){
+	readGraph();
+	displayGraph();
+	Prims(0);
+	displayTree();
+	return 0;
+}
+
+
+
+
+
+Dijkstra_Grpah :
+5
+0 7 0 2 0
+0 0 1 2 0
+0 0 0 0 4
+0 3 8 0 5
+0 0 3 0 0
+
+//Dijkstras Algorithm
+#include<stdio.h>
+#include<stdlib.h>
+#define MAX 10
+int n;
+int cost[MAX][MAX];
+void readGraph(){
+	int i,j;
+	FILE *fp=fopen("Dijkstra_Graph.txt","r");
+	if(fp==NULL){
+		printf("\nFile open failed !!");
+		exit(1);
+	}
+	fscanf(fp,"%d",&n);
+	for(i=0;i<n;i++){
+		for(j=0;j<n;j++){
+			fscanf(fp,"%d",&cost[i][j]);
+		}
+	}
+	fclose(fp);
+}
+void displayGraph(){
+	int i,j;
+	for(i=0;i<n;i++){
+		for(j=0;j<n;j++){
+			printf("%3d",cost[i][j]);
+		}
+		printf("\n");
+	}
+	printf("\n\n");
+}
+int dist[MAX];
+int pred[MAX];
+int mptSet[MAX];
+int minVertex(){
+	int i,j;
+	int index=-1;
+	int min=9999;
+	for(i=0;i<n;i++){
+		if(mptSet[i]==0 && min>dist[i]){
+			min=dist[i];
+			index=i;
+		}
+	}
+	return index;
+}
+void Dijkstra(int r){
+	int i,v;
+	for(i=0;i<n;i++){
+		dist[i]=9999;
+		pred[i]=-1;
+		mptSet[i]=0;
+	}
+	dist[r]=0;
+	for(i=0;i<n;i++){
+		int u=minVertex();
+		mptSet[u]=1;
+		for(v=0;v<n;v++){
+			if(cost[u][v]!=0){
+				if(mptSet[v]==0 && dist[v] > dist[u]+cost[u][v]){
+					dist[v]=dist[u]+cost[u][v];
+					pred[v]=u;
+				}	
+			}
+		}
+	}
+}
+void path(int src, int dest){
+	if(dest==src){
+		printf("%c",src+'A');
+		return;
+	}
+	path(src,pred[dest]);
+	printf("--->%c",dest+'A');
+}
+void pathCost(int src){
+	int i;
+	for(i=0;i<n;i++){
+		if(i!=src){
+			printf("\nCost of the path from %c to %c is %d \t Path : ",src+'A',i+'A',dist[i]);
+			path(src,i);
+			printf("\n");
+		}
+	}
+}
+int main(){
+	readGraph();
+	displayGraph();
+	int src=0;
+	Dijkstra(src);
+	pathCost(src);
+	return 0;
+}
+
+
+
+
+
+Bellman_Graph :
+6
+0 1 0 0 0 0
+0 0 1 0 0 5
+0 0 0 4 1 0
+0 0 0 0 0 0
+0 0 0 2 0 0
+1 0 0 0 4 0
+
+//BellmanFord
+#include<stdio.h>
+#include<stdlib.h>
+#define MAX 10
+int n;
+int dist[MAX];
+int pred[MAX];
+typedef struct edge{
+	int v1,v2,w;
+}edge;
+edge e[10];
+int noe=0;
+void readGraph(){
+	FILE *fp;
+	int i,j,read,m=0;
+	fp=fopen("Bellman_Graph.txt","r");
+	if(fp==NULL){
+		printf("FILE open failed\n");
+		exit(1);
+	}
+	fscanf(fp,"%d",&n);
+	for(i=0;i<n;i++){
+		for(j=0;j<n;j++){
+			fscanf(fp,"%d",&read);
+			if(read!=0){ //Counting the no of edges
+				e[m].v1=i;
+				e[m].v2=j;
+				e[m++].w=read;
+				noe++;
+			}
+		}
+	}
+	fclose(fp);
+	for(i=0;i<noe;i++){
+		printf("(%c --> %c) --> %d\n",e[i].v1+65,e[i].v2+65,e[i].w);
+	}
+	printf("\n");
+}
+int Bellman(int r){
+	int i,j;
+	for(i=0;i<n;i++){
+		dist[i]=9999;
+		pred[i]=-1;
+	}
+	dist[r]=0;
+	for(i=0;i<n-1;i++){
+		for(j=0;j<noe;j++){
+			if(dist[e[j].v2]>dist[e[j].v1]+e[j].w){
+				dist[e[j].v2]=dist[e[j].v1]+e[j].w;
+				pred[e[j].v2]=e[j].v1;
+			}
+		}
+	}for(j=0;j<noe;j++){
+		if(dist[e[j].v2]>dist[e[j].v1]+e[j].w){
+			return 0;
+		}
+	}
+	return 1;
+}
+void path(int src, int dest){
+	if(dest==src){
+		printf("%c",src+'A');
+		return;
+	}
+	path(src,pred[dest]);
+	printf("--->%c",dest+'A');
+}
+void pathCost(int src){
+	int i;
+	for(i=0;i<n;i++){
+		if(i!=src){
+			printf("\nCost of the path from %c to %c is %d \t Path : ",src+'A',i+'A',dist[i]);
+			path(src,i);
+			printf("\n");
+		}
+	}
+}
+int main(){
+	readGraph();
+	int src=0;
+	int result=Bellman(src);
+	if(result==0){
+		printf("\nNegative Cycke Exists !!");
+	}
+	else{
+		pathCost(src);
+	}
+	return 0;
+}
+
+
+
+
+
+FW_Grpah :
+4
+0	10	5	3
+1	0	9999	9999
+9999	2	0	9999
+9999	9999	2	0
+
+//Floyd-Warshall
+#include<stdio.h>
+#include<Stdlib.h>
+#define MAX 10
+int n;
+int count=0;
+int cost[MAX][MAX];
+int dist[MAX][MAX];
+int parent[MAX][MAX];
+void display(int arr[][MAX]){
+	int i,j;
+	printf("Matrix D%d :\n\n",count++);
+	for(i=0;i<n;i++){
+		for(j=0;j<n;j++){
+			printf("%4d\t",arr[i][j]);
+		}
+		printf("\n");
+	}
+	printf("\n\n");
+}
+void readGraph(){
+	int i,j;
+	FILE *fp=fopen("FW_Graph.txt","r");
+	if(fp==NULL){
+		printf("\nFile open failed !!");
+		exit(1);
+	}
+	else{
+		fscanf(fp,"%d",&n);
+		for(i=0;i<n;i++){
+			for(j=0;j<n;j++){
+				fscanf(fp,"%d",&cost[i][j]);
+			}
+		}
+	}
+	fclose(fp);
+}
+void FloydWarshall(){
+	int i,j,k;
+	for(i=0;i<n;i++){
+		for(j=0;j<n;j++){
+			dist[i][j]=cost[i][j];
+			if(cost[i][j]==0 || cost[i][j]==9999){
+				parent[i][j]=-1;
+			}
+			else{
+				parent[i][j]=i;
+			}
+		}
+	}
+	for(k=0;k<n;k++){
+		for(i=0;i<n;i++){
+			for(j=0;j<n;j++){
+				if(dist[i][j]>dist[i][k]+dist[k][j]){
+					dist[i][j]=dist[i][k]+dist[k][j];
+					parent[i][j]=parent[k][j];
+				}
+			}
+		}
+		display(dist);
+	}
+}
+void path(int src, int dest){
+	if(src==dest){
+		printf("%c",src+'A');
+		return;
+	}
+	path(src,parent[src][dest]);
+	printf("--->%c",dest+'A');
+}
+void pathCost(int src){
+	int i;
+	for(i=0;i<n;i++){
+		if(i!=src){
+			printf("\nCost of the path from %c to %c is %d\t Path = ",src+'A',i+'A',dist[src][i]);
+			path(src,i);
+			printf("\n");
+		}
+	}
+}
+int main(){
+	readGraph();
+	display(cost);
+	FloydWarshall();
+	pathCost(0);
+	return 0;
+}
+
+
+
+
+
+//Matrix-Chain-Multiplication
+#include<stdio.h>
+#include<limits.h>
+int p[]={2,3,4,2,3};
+int M[20][20];
+int S[20][20];
+void MatrixChainOrder(){
+	int i,len,k;
+	int n=sizeof(p)/sizeof(p[0])-1;
+	for(i=1;i<=n;i++){
+		M[i][i]=0;
+	}
+	for(len=2;len<=n;len++){
+		for(i=1;i<=n-len+1;i++){
+			int j=i+len-1;
+			M[i][j]=INT_MAX;
+			for(k=i;k<=j-1;k++){
+				int cost=M[i][k] + M[k+1][j] + (p[i-1]*p[k]*p[j]);
+				if(cost<M[i][j]){
+					M[i][j]=cost;
+					S[i][j]=k;
+				}
+			}
+		}
+	}
+}
+void POP(int i, int j){
+	if(i==j){
+		printf("A%d",i);
+	}
+	else{
+		printf("(");
+		POP(i,S[i][j]);
+		POP(S[i][j]+1,j);
+		printf(")");
+	}
+}
+void printMTable(int n){
+	int i,j,k;
+	printf("***** M Table *****\n");
+	for(i=1;i<=n;i++){
+		for(k=1;k<i;k++){
+			printf("%3c",' ');
+		}
+		for(j=i;j<=n;j++){
+			printf("%3d",M[i][j]);
+		}
+		printf("\n");
+	}
+}
+void printSTable(int n){
+	int i,j,k;
+	printf("***** S Table *****\n");
+	for(i=1;i<=n;i++){
+		for(k=1;k<=i;k++){
+			printf("%3c",' ');
+		}
+		for(j=i+1;j<=n;j++){
+			printf("%3d",S[i][j]);
+		}
+		printf("\n");
+	}
+}
+int main(){
+	int n=sizeof(p)/sizeof(p[0])-1;
+	MatrixChainOrder();
+	printMTable(n);
+	printSTable(n);
+	POP(1,n);
+	printf("\n");
+	return 0;
+}
+
+
+
+
+
+//N-Queen
+#include<stdio.h>
+#include<stdlib.h>
+#define MAX 20
+int n,c=0,flag=0;
+int x[MAX]={0};
+int placed(int k, int i){
+	int j;
+	for(j=1;j<k;j++){
+		if(x[j]==i | abs(j-k)==abs(x[j]-i)){
+			return 0;
+		}
+	}
+	return 1;
+}
+void displayMat(int x[n]){
+	int i,j;
+	for(i=1;i<=n;i++){
+		for(j=1;j<=n;j++){
+			if(x[i]==j){
+				printf("Q ");
+			}
+			else{
+				printf(". ");
+			}
+		}
+		printf("\n");
+	}
+	printf("\n");
+}
+void display(int x[n]){
+	int i;
+	c++;
+	printf("Solution %d : ",c);
+	for(i=1;i<=n;i++){
+		printf("%3d",x[i]);
+	}
+	printf("\n\n");
+	displayMat(x);
+}
+void nQueen(int k, int n){
+	int i;
+	for(i=1;i<=n;i++){
+		if(placed(k,i)){
+			x[k]=i;
+			if(k==n){
+				display(x);
+				flag=1;
+			}
+			else{
+				nQueen(k+1,n);
+			}
+		}
+	}
+}
+int main(){
+	printf("Enter the value of n : ");
+	scanf("%d",&n);
+	nQueen(1,n);
+	if(flag==0){
+		printf("\nNo Solution available !!");
+	}
+	return 0;
+}
+
+
+
+
+
+//M-Coloring
+#include<stdio.h>
+#include<stdlib.h>
+#define MAX 20
+#define V 4
+int graph[V+1][V+1]={
+			{0,0,0,0,0},
+			{0,0,1,0,1},
+			{0,1,0,1,0},
+			{0,0,1,0,1},
+			{0,1,0,1,0}
+			};
+int n=V;
+int m;
+int x[V+1]={0};
+void nextValue(int k){
+	while(1){
+		x[k]=(x[k]+1)%(m+1);
+		if(x[k]==0){
+			return;
+		}
+		int j;
+		for(j=1;j<k;j++){
+			if(graph[j][k]==1 && x[j]==x[k]){
+				break;
+			}
+		}
+		if(j==k){
+			return;
+		}
+	}
+}
+void printSolution(){
+	int i;
+	static int count;
+	printf("Solution %d : ",++count);
+	for(i=1;i<=n;i++){
+		printf("%3d",x[i]);
+	}
+	printf("\n");
+}
+void mColoring(int k){
+	while(1){
+		nextValue(k);
+		if(x[k]==0){
+			return;
+		}
+		if(k==n){
+			printSolution();
+		}
+		else{
+			mColoring(k+1);
+		}
+	}
+}
+int main(){
+	printf("Enter the number of colors : ");
+	scanf("%d",&m);
+	mColoring(1);
+	return 0;
+}
