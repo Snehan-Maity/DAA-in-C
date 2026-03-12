@@ -49,5 +49,6 @@ int main(){
     for(i=1;i<=n;i++){
 		printf("%d ",arr[i]);
 	}
+	free(arr);
     return 0;
 }
